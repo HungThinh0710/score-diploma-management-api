@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateOrganizationSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,14 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('organization_settings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('org_id');
             $table->foreign('org_id')
                 ->references('id')->on('organizations')
                 ->onDelete('cascade');
-            $table->boolean('is_owner')->default(false);
-            $table->string('email')->unique();
-            $table->string('full_name');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->boolean('is_direct_submit_transcript')->default(false);
+            $table->boolean('is_activate_email_domain')->default(false);;
         });
     }
 
@@ -36,6 +31,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('organization_settings');
     }
 }
