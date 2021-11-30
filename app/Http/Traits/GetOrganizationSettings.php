@@ -9,10 +9,11 @@ trait GetOrganizationSettings{
     {
         $org = OrganizationSettings::find($orgId);
         if(!$org)
-            return response()->json([
+            abort(
+                response()->json([
                 'success' => false,
                 'message' => 'Organization setting not found.'
-            ], 400);
+            ], 400));
         return $org;
     }
 }

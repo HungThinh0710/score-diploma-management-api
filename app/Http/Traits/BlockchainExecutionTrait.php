@@ -9,11 +9,20 @@ use stdClass;
 
 trait BlockchainExecutionTrait{
 
-    private function returnObject($success = false, $message = 'Unknown error') : stdClass
+    private function returnObject($success = false, $response = null) : stdClass
     {
         $return = new stdClass;
         $return->success = $success;
-        $return->message = $message;
+        $return->code = $response->code;
+        $return->response = $response->data; // data return an array;
+        if($response->success) {
+            $return->message = $response->message;
+            $return->errorMessage = $response->errorMessage;
+        }
+        else{
+            $return->errorMessage = $response->errorMessage;
+            $return->message = null;
+        }
         return $return;
     }
 
@@ -39,13 +48,16 @@ trait BlockchainExecutionTrait{
                 }
                 $headers['Authorization'] = 'Bearer '.$blockchainToken->token;
             }
-
             $headers['secret'] = env('SECRET_API_KEY');
+
+
             $response = $client->request('POST', $endpoint, [
                 'headers' => $headers,
                 'json' =>  $payload
             ]);
-            return json_decode($response->getBody(), true);
+//            dd(json_decode($response->getBody()->getContents()));
+            $responseJSON = (object) json_decode($response->getBody()->getContents(), true);
+            return $this->returnObject($responseJSON->success, $responseJSON);
         }
         catch (ClientException $e){
             echo Psr7\Message::toString($e->getRequest());

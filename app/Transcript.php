@@ -13,6 +13,6 @@ class Transcript extends Model
 
     public function classRoom()
     {
-        return $this->belongsTo('App\ClassRoom');
+        return $this->belongsTo('App\ClassRoom', 'class_id', 'id');
     }
 }

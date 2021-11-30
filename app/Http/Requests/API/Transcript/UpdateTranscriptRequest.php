@@ -4,7 +4,7 @@ namespace App\Http\Requests\API\Transcript;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubmitNewTranscriptRequest extends FormRequest
+class UpdateTranscriptRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,18 +25,16 @@ class SubmitNewTranscriptRequest extends FormRequest
     {
         return [
             'class_id'     => 'required|integer|exists:App\ClassRoom,id',
-            'student_code'    => 'required|string',
+            'student_code' => 'required|string|exists:App\Transcript,student_code',
             'student_name'  => 'required|string',
-            'transcript' => 'required|array',
+            'transcript'   => 'required|array',
         ];
     }
 
     public function messages()
     {
         return [
-            'class_id.exists' => 'Class is not exists.',
-//            'class_id.required' => 'Class id is required',
-//            'class_id.integer' => 'Class id must be a number',
+            'student_code.exists' => 'StudentID is not exists.',
         ];
     }
 }

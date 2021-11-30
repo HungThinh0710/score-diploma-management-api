@@ -37,21 +37,22 @@ class AuthenticateController extends Controller
         $responseBody = $this->postAPI(API::REGISTER, null, $payload, false);
 
         DB::beginTransaction();
-        if ((bool)$responseBody['success'] == true && $user->save() == true) {
+        if ((bool)$responseBody->success == true && $user->save() == true) {
             DB::commit();
             return response()->json([
                 'message' => 'Register successfully.',
                 'success' => true,
                 'user' => $user,
-                'credentials' => $responseBody['value']
+                'wallet' => $responseBody->response
             ], 201);
         }
 //        $this->postAPI(API::REVOKE_USER, null, $payload);
         DB::rollBack();
         return response()->json([
-            'message' => $responseBody['errorMessage'],
-            'success' => false,
-            'user' => null
+            'message'     => $responseBody->errorMessage,
+            'success'     => false,
+            'user'        => null,
+            'credentials' => false,
         ], 400);
 
     }
@@ -77,15 +78,15 @@ class AuthenticateController extends Controller
         ];
 
         $responseLogin = $this->postAPI(API::LOGIN, null, $payload, false);
-        if($responseLogin['success'] == true){
+        if($responseLogin->success == true){
             $token = Auth::user()->createToken('appToken');
 //            $cookie = $this->getCookieDetails($token->accessToken);
             session(['org_id' => Auth::user()->org_id]);
 
             $blockchainCredentials = [
                 'user_id' => Auth::user()->id,
-                'token' => $responseLogin['value']['credentials']['token'],
-                'expires_at' => $responseLogin['value']['credentials']['expires_at'],
+                'token' => $responseLogin->response['credentials']['token'],
+                'expires_at' => Carbon::createFromTimestamp($responseLogin->response['credentials']['expires_at'])->toDateTimeString(),
             ];
 
             BlockchainToken::updateOrCreate(

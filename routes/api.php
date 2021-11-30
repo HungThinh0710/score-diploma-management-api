@@ -50,12 +50,23 @@ Route::group(['prefix' => 'client'], function(){
 
         // Transcript
         Route::group(['prefix' => 'transcripts'], function(){
-//            Route::get('/', 'API\Client\TranscriptController@')->name('transcript.list');
-            Route::post('/', 'API\Client\TranscriptController@create')->name('transcript.create');
-//            Route::post('/', 'API\Client\TranscriptController@import')->name('transcript.import');
-//            Route::PUT('/', 'API\Client\TranscriptController@')->name('transcript.update');
+            Route::get('/get-all', 'API\Client\TranscriptController@index')->name('transcript.list');
+            Route::get('/get-by-student-code', 'API\Client\TranscriptController@getByStudentCode')->name('transcript.get-by-student-code');
+            Route::get('/get-by-trxid', 'API\Client\TranscriptController@getByTrxId')->name('transcript.get-by-trxid');
+            Route::post('/history', 'API\Client\TranscriptController@history')->name('transcript.history');
+            Route::post('/submit', 'API\Client\TranscriptController@submit')->name('transcript.submit');
+            Route::patch('/update', 'API\Client\TranscriptController@update')->name('transcript.update');
+//            Route::delete('/', 'API\Client\TranscriptController@index')->name('transcript.delete');
+        });
+
+        // In Queue Transcript
+        Route::group(['prefix' => 'queue-transcripts'], function(){
+            Route::get('/', 'API\Client\InQueueTranscriptController@index')->name('queue.transcript.list');
+            Route::post('/approve', 'API\Client\InQueueTranscriptController@approve')->name('queue.transcript.approve');
             //...
         });
+
+
 
         // Permissions
         Route::group(['prefix' => 'permissions'], function(){
@@ -70,40 +81,11 @@ Route::group(['prefix' => 'client'], function(){
             Route::delete('/', 'API\Client\RoleController@delete')->name('role.delete');
         });
 
-        // Transcript
-        Route::group(['prefix' => 'transcripts'], function(){
-//            Route::get('/', 'API\Client\TranscriptController@index')->name('transcript.list');
-//            Route::get('/detail', 'API\Client\TranscriptController@index')->name('transcript.detail');
-//            Route::get('/queue', 'API\Client\TranscriptController@index')->name('transcript.queue');
-            Route::post('/submit', 'API\Client\TranscriptController@submit')->name('transcript.submit');
-//            Route::patch('/', 'API\Client\TranscriptController@index')->name('transcript.update');
-//            Route::post('/approve', 'API\Client\TranscriptController@index')->name('transcript.approve');
-//            Route::delete('/', 'API\Client\TranscriptController@index')->name('transcript.delete');
-        });
-
         // Integrated API
         Route::group(['prefix' => 'integrated'], function(){
             //...
         });
 
-        Route::group(['prefix' => 'test-permission-auth'], function (){
-            Route::get('/admin', function (Request $request){
-                return response()->json([
-                    'message'=>'Hello from admin',
-                    'dd' => $request->user()->hasRole('admin'),
-                ]);
-            })
-//                ;
-                ->middleware('role_or_permission:approve transcript');
-            Route::get('/user', function (Request $request){
-                return response()->json([
-                    'message'=>'Hello from user',
-                    'dd' => $request->user()->can('submit transcript'),
-                ]);
-            })
-                ;
-//                ->middleware('role_or_permission:submit transcript');
-        });
     });
 });
 

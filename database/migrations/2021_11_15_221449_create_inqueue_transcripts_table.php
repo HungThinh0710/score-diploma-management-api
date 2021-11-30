@@ -19,8 +19,10 @@ class CreateInqueueTranscriptsTable extends Migration
             $table->foreign('class_id')
                 ->references('id')->on('classes')
                 ->onDelete('cascade');
+            $table->integer('type')->default(1);
             $table->string('student_code');
-            $table->json('payload');
+            $table->string('student_name');
+            $table->json('transcript');
             $table->timestamps();
         });
     }

@@ -36,6 +36,8 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'submit transcript', 'guard_name' => 'web']);
         Permission::create(['name' => 'update transcript', 'guard_name' => 'web']);
         Permission::create(['name' => 'approve transcript', 'guard_name' => 'web']);
+        Permission::create(['name' => 'history transcript', 'guard_name' => 'web']);
+        Permission::create(['name' => 'delete transcript', 'guard_name' => 'web']);
         //--- Manage Roles & Permission
         Permission::create(['name' => 'view permission', 'guard_name' => 'web']);
         Permission::create(['name' => 'view role', 'guard_name' => 'web']);
@@ -65,11 +67,11 @@ class RolesAndPermissionsSeeder extends Seeder
         $roleAdmin->givePermissionTo(Permission::all());
         $roleUser->givePermissionTo('view class','view transcript', 'submit transcript', 'update transcript');
 
-        $admin = User::findOrFail(1);
-        $user = User::findOrFail(2);
-
-        $admin->assignRole($roleAdmin);
-        $user->assignRole($roleUser);
+//        $admin = User::findOrFail(1);
+//        $user = User::findOrFail(2);
+//
+//        $admin->assignRole($roleAdmin);
+//        $user->assignRole($roleUser);
 
     }
 }
