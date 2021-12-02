@@ -1,0 +1,853 @@
+openapi: 3.0.3
+info:
+    title: 'Transcript API Documentations'
+    description: ''
+    version: 1.0.0
+servers:
+    -
+        url: 'http://localhost'
+paths:
+    /api/client/auth/login:
+        post:
+            summary: Login.
+            description: 'Login to organization'
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: '200'
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "{\n \"access_token\": \"access_token_here\",\n \"expires_at\": \"2022-12-02 23:01:04\",\n \"message\": \"Login successfully.\",\n \"success\": true,\n \"user\": {\n     \"id\": 17,\n     \"org_id\": 1,\n     \"is_owner\": 0,\n     \"email\": \"khaothi17@hungthinh.edu.vn\",\n     \"full_name\": \"To Khao Thi VKU\",\n     …,\n },\n \"created_at\": \"2021-12-02 18:23:04\",\n \"email\": \"khaothi17@hungthinh.edu.vn\"\n}"
+            tags:
+                - 'Authenticating endpoints'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: String
+                                    description: ''
+                                    example: consequuntur
+                                password:
+                                    type: String
+                                    description: ''
+                                    example: dolor
+                                wallet:
+                                    type: String
+                                    description: "<h4 class=\"fancy-heading-panel\"><b>Success Code</b></h4>\n<p> 0 => success</p>\n<h4 class=\"fancy-heading-panel\"><b>Error Code</b></h4>\n<p><b><code>1</code></b>  <small>Wallet credentials is not valid.</small>\n<p><b><code>2</code></b>  <small> Username or password are wrong.</small>"
+                                    example: quidem
+                            required:
+                                - email
+                                - password
+                                - wallet
+            security: []
+    /api/client/auth/register:
+        post:
+            summary: Register.
+            description: 'Login to organization (Only admin of organization can execute this endpoint)'
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                201:
+                    description: '201'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Register successfully.'
+                                    success: true
+                                    user: { org_id: 1, email: khaothi17@hungthinh.edu.vn, full_name: 'To Khao Thi VKU', updated_at: '2021-12-02 18:23:04', created_at: '2021-12-02 18:23:04', id: 17 }
+                                    wallet: eyJpdiI6Ik9ORFdhMnA1T0hJaUhQTnVGWGxMMmc9PSIsInZhbHVlIjoiMzQ
+                                properties:
+                                    message: { type: string, example: 'Register successfully.' }
+                                    success: { type: boolean, example: true }
+                                    user: { type: object, example: { org_id: 1, email: khaothi17@hungthinh.edu.vn, full_name: 'To Khao Thi VKU', updated_at: '2021-12-02 18:23:04', created_at: '2021-12-02 18:23:04', id: 17 } }
+                                    wallet: { type: string, example: eyJpdiI6Ik9ORFdhMnA1T0hJaUhQTnVGWGxMMmc9PSIsInZhbHVlIjoiMzQ }
+            tags:
+                - 'Authenticating endpoints'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                org_id:
+                                    type: numeric
+                                    description: ''
+                                    example: quas
+                                email:
+                                    type: String
+                                    description: ''
+                                    example: voluptatum
+                                full_name:
+                                    type: String
+                                    description: ''
+                                    example: eum
+                                password:
+                                    type: String
+                                    description: ''
+                                    example: excepturi
+                            required:
+                                - org_id
+                                - email
+                                - full_name
+                                - password
+            security: []
+    /api/development/auth/login:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    description: 'The value must be a valid email address.'
+                                    example: emelie42@example.net
+                                password:
+                                    type: string
+                                    description: ''
+                                    example: sapiente
+                                wallet:
+                                    type: string
+                                    description: ''
+                                    example: facilis
+                            required:
+                                - email
+                                - password
+                                - wallet
+            security: []
+    /api/client/organization:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                org_id:
+                                    type: integer
+                                    description: ''
+                                    example: 17
+                            required:
+                                - org_id
+            security: []
+        patch:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+    /api/client/permissions:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            security: []
+    /api/client/classrooms:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            security: []
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                class_name:
+                                    type: string
+                                    description: ''
+                                    example: consequatur
+                                start_year:
+                                    type: number
+                                    description: ''
+                                    example: 7.28087861
+                                code:
+                                    type: string
+                                    description: ''
+                                    example: autem
+                            required:
+                                - class_name
+                                - start_year
+                                - code
+            security: []
+        patch:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                class_id:
+                                    type: integer
+                                    description: ''
+                                    example: 9
+                            required:
+                                - class_id
+            security: []
+    /api/client/transcripts/get-all:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            security: []
+    /api/client/transcripts/get-by-student-code:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                student_code:
+                                    type: string
+                                    description: ''
+                                    example: ipsam
+                            required:
+                                - student_code
+            security: []
+    /api/client/transcripts/get-by-trxid:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                trxID:
+                                    type: string
+                                    description: ''
+                                    example: rem
+                            required:
+                                - trxID
+            security: []
+    /api/client/transcripts/history:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+    /api/client/transcripts/submit:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                class_id:
+                                    type: integer
+                                    description: ''
+                                    example: 16
+                                student_code:
+                                    type: string
+                                    description: ''
+                                    example: non
+                                student_name:
+                                    type: string
+                                    description: ''
+                                    example: blanditiis
+                                transcript:
+                                    type: array
+                                    description: ''
+                                    example: [minima]
+                                    items: { type: string }
+                            required:
+                                - class_id
+                                - student_code
+                                - student_name
+                                - transcript
+            security: []
+    /api/client/transcripts/update:
+        patch:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                class_id:
+                                    type: integer
+                                    description: ''
+                                    example: 17
+                                student_code:
+                                    type: string
+                                    description: ''
+                                    example: accusamus
+                                student_name:
+                                    type: string
+                                    description: ''
+                                    example: tenetur
+                                transcript:
+                                    type: array
+                                    description: ''
+                                    example: [omnis]
+                                    items: { type: string }
+                            required:
+                                - class_id
+                                - student_code
+                                - student_name
+                                - transcript
+            security: []
+    /api/client/queue-transcripts:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            security: []
+    /api/client/queue-transcripts/approve:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                queue_id:
+                                    type: string
+                                    description: ''
+                                    example: sint
+                            required:
+                                - queue_id
+            security: []
+    /api/client/roles:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+            security: []
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    description: ''
+                                    example: autem
+                            required:
+                                - name
+            security: []
+        patch:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                role_id:
+                                    type: integer
+                                    description: ''
+                                    example: 20
+                                name:
+                                    type: string
+                                    description: ''
+                                    example: tenetur
+                            required:
+                                - role_id
+                                - name
+            security: []
+        delete:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                role_id:
+                                    type: integer
+                                    description: ''
+                                    example: 1
+                            required:
+                                - role_id
+            security: []

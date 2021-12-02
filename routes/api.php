@@ -27,7 +27,6 @@ Route::group(['prefix' => 'client'], function(){
     });
 
     Route::group(['middleware' => 'auth:api'], function() {
-        Route::get('/test', 'API\TestController@test');
 
         // Organization
         Route::group(['prefix' => 'organization'], function(){
