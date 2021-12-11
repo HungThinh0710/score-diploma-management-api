@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\API\Client;
 
 use App\ClassRoom;
+use App\Organization;
+use App\Major;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\ClassRoom\CreateClassRequest;
 use App\Http\Requests\API\ClassRoom\UpdateClassRequest;
-use App\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +17,7 @@ class ClassRoomController extends Controller
     {
         $orgId = $request->user()->org->id;
         $this->authorize('view', ClassRoom::class);
-        $classRoom = ClassRoom::where('org_id', $orgId)->paginate(25);
+        $classRoom = ClassRoom::with(['major', 'transcripts'])->where('org_id', $orgId)->orderBy('class_name')->paginate($request->input('perpage'));
         return response()->json([
             'success' => true,
             'message' => 'Get class list successfully.',
@@ -26,13 +27,15 @@ class ClassRoomController extends Controller
 
     public function create(CreateClassRequest $request)
     {
+        $major = Major::findOrFail($request->input('major_id'));
+        $this->authorize('checkMajorWithId', $major);
         $this->authorize('create', ClassRoom::class);
         $request->merge(['org_id' => $request->user()->org->id]);
         $payloads = $request->all();
         ClassRoom::create($payloads);
         return response()->json([
             'success' => true,
-            'message' => 'create a class successfully.',
+            'message' => 'Create class '.$request->input('class_name').' successfully.',
             'class' => $payloads
         ], 201);
     }
@@ -40,9 +43,10 @@ class ClassRoomController extends Controller
     public function update(UpdateClassRequest $request)
     {
         $classId = $request->input('class_id');
-        $this->authorize('update', [ClassRoom::class, $request->user()->org_id]);
         $payload = array_filter($request->only('class_name', 'start_year', 'code'), 'strlen');
-        $isUpdated = ClassRoom::where('id', $classId)->first()->update($payload);
+        $classroom = ClassRoom::where('id', $classId)->first();
+        $this->authorize('update', [ClassRoom::class, $classroom]);
+        $isUpdated = $classroom->update($payload);
         if($isUpdated)
             return response()->json([
                 'success' => true,
@@ -53,5 +57,10 @@ class ClassRoomController extends Controller
             'success' => false,
             'message' => 'Update class failed.',
         ], 400);
+    }
+
+    public function delete()
+    {
+
     }
 }

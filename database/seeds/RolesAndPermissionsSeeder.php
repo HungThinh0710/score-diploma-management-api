@@ -26,6 +26,8 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view organization', 'guard_name' => 'web']);
         Permission::create(['name' => 'edit organization', 'guard_name' => 'web']);
         Permission::create(['name' => 'active organization', 'guard_name' => 'web']);
+        Permission::create(['name' => 'view user organization', 'guard_name' => 'web']);
+
         //--- Class
         Permission::create(['name' => 'view class', 'guard_name' => 'web']);
         Permission::create(['name' => 'create class', 'guard_name' => 'web']);
@@ -45,7 +47,6 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'edit role', 'guard_name' => 'web']);
         Permission::create(['name' => 'delete role', 'guard_name' => 'web']);
         Permission::create(['name' => 'manage permission role', 'guard_name' => 'web']);
-
         //--- API - Blockchain
         Permission::create(['name' => 'blockchain view transcript', 'guard_name' => 'web']);
         Permission::create(['name' => 'blockchain sync transcript', 'guard_name' => 'web']);

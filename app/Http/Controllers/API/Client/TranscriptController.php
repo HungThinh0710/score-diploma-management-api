@@ -179,9 +179,9 @@ class TranscriptController extends Controller
     {
         $this->authorize('viewAll', Transcript::class);
         $orgId = $request->user()->org_id;
-        return Transcript::whereHas('classRoom', function ($q) use ($orgId) {
+        return Transcript::with('classRoom')->whereHas('classRoom', function ($q) use ($orgId) {
             $q->where('org_id', $orgId);
-        })->paginate(20);
+        })->paginate($request->input('perpage'));
     }
 
     public function history(Request $request)

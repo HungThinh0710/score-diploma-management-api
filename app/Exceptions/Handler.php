@@ -3,7 +3,9 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -51,5 +53,53 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         return parent::render($request, $exception);
+    }
+    // Transform the error messages,
+    private function transformErrors(ValidationException $exception)
+    {
+        $errors = [];
+
+        foreach ($exception->errors() as $field => $message) {
+            $errors[] = [
+                'field' => $field,
+                'message' => $message[0],
+            ];
+        }
+
+        return $errors;
+    }
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json([
+            'code'    => $exception->status,
+            'message' => $exception->getMessage(),
+            'success' => false,
+            'errors'  => $this->transformErrors($exception),
+
+        ], $exception->status);
+    }
+
+    /**
+     * Custom Redirect route with multiple authenticate guard.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param AuthenticationException $exception
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Unauthenticated.',
+                'success' => false,
+                'code' => 99
+            ], 401);
+        }
+        if ($request->is('admincp') || $request->is('admincp/*')) {
+            return redirect()->guest(route('admin_show_login'));
+        }
+
+        return redirect()->guest(route('org_show_login'));
     }
 }

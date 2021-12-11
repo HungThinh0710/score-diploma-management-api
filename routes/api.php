@@ -26,12 +26,24 @@ Route::group(['prefix' => 'client'], function(){
         Route::post('register', 'API\Client\AuthenticateController@register');
     });
 
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::group(['prefix' => 'users'], function(){
+        Route::get('/', 'API\Client\UserController@index')->name('users.list');
+        //...
+    });
+
+    // BETA WITHOUT LOGIN
+    Route::group(['prefix' => 'organization'], function(){
+//        Route::get('/users', 'API\Client\OrganizationController@users')->name('organization.users');
+    });
+
+    Route::group(['middleware' => 'auth.api'], function() {
 
         // Organization
         Route::group(['prefix' => 'organization'], function(){
             Route::get('/', 'API\Client\OrganizationController@index')->name('organization.list');
             Route::patch('/', 'API\Client\OrganizationController@update')->name('organization.update');
+            Route::get('/users', 'API\Client\OrganizationController@users')->name('organization.users');
+
         });
 
         // Permission
@@ -65,7 +77,11 @@ Route::group(['prefix' => 'client'], function(){
             //...
         });
 
-
+//        // Users
+//        Route::group(['prefix' => 'users'], function(){
+//            Route::get('/', 'API\Client\UserController@index')->name('users.list');
+//            //...
+//        });
 
         // Permissions
         Route::group(['prefix' => 'permissions'], function(){

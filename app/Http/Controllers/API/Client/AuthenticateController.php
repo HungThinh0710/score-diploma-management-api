@@ -74,8 +74,8 @@ class AuthenticateController extends Controller
                 'success' => true,
                 'user' => $user,
                 'code' => $responseBody->code,
-//                'wallet' => $responseBody->response,
-                'wallet' => Crypt::encryptString(json_encode($responseBody->response)),
+                'wallet' => $responseBody->response,
+                'walletEncrypted' => Crypt::encryptString(json_encode($responseBody->response)),
             ], 201);
         }
 //        $this->postAPI(API::REVOKE_USER, null, $payload);
@@ -93,11 +93,11 @@ class AuthenticateController extends Controller
         return [
             'name' => '_token',
             'value' => $token,
-            'minutes' => 525948,
+            'minutes' => 525948, // 525948
             'path' => null,
             'domain' => null,
-            //  'secure' => true, // for production
-            'secure' => null, // for localhost
+            //  'secure' => true, // for production https
+            'secure' => false, // for localhost
             'httponly' => true,
             'samesite' => true,
         ];
@@ -118,6 +118,7 @@ class AuthenticateController extends Controller
      * <h4 class="fancy-heading-panel"><b>Error Code</b></h4>
      * <p><b><code>1</code></b>  <small>Wallet credentials is not valid.</small>
      * <p><b><code>2</code></b>  <small> Username or password are wrong.</small>
+     * <p><b><code>422</code></b>  <small> Payload is not valid.</small>
      *
      * @response 200 {
      *  "access_token": "access_token_here",
@@ -160,8 +161,7 @@ class AuthenticateController extends Controller
         if($responseLogin->success == true){
             $token = Auth::user()->createToken('appToken');
             $cookie = $this->getCookieDetails($token->accessToken);
-            session(['org_id' => Auth::user()->org_id]);
-
+//            session(['org_id' => Auth::user()->org_id]); // Do not use Session anymore
             $blockchainCredentials = [
                 'user_id' => Auth::user()->id,
                 'token' => $responseLogin->response['credentials']['token'],
@@ -182,11 +182,13 @@ class AuthenticateController extends Controller
                 'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
             ])->cookie($cookie['name'], $cookie['value'], $cookie['minutes'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'], $cookie['samesite']);
         }
-
-        Auth::user()->token()->revoke(); // instead Auth::logout
+//        return Auth::user;
+        Auth::logout();
+//        Auth::user()->token()->revoke(); // instead Auth::logout
+//        Auth::user()->token()->revoke(); // instead Auth::logout
         return response()->json([
             'success' => false,
-            'message' => $responseLogin['errorMessage'],
+            'message' => $responseLogin->errorMessage,
             'code' => $responseLogin->code,
         ], 400);
     }

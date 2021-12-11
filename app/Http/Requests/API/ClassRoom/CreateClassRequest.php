@@ -25,6 +25,7 @@ class CreateClassRequest extends FormRequest
     {
         return [
             'class_name' => 'required|string',
+            'major_id'   => 'required|exists:App\Major,id',
             'start_year' => 'required|numeric|min:1965',
             'code' => 'required|string',
         ];

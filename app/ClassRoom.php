@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ClassRoom extends Model
 {
     protected $table = 'classes';
-    protected $fillable = ['org_id', 'class_name', 'start_year', 'code'];
+    protected $fillable = ['org_id', 'major_id','class_name', 'start_year', 'code'];
     public $timestamps = true;
     public $incrementing = true;
 
@@ -26,5 +26,9 @@ class ClassRoom extends Model
         return $this->hasMany('App\InQueueTranscript', 'class_id','id');
     }
 
+    public function major()
+    {
+        return $this->belongsTo('App\Major', 'major_id', 'id');
+    }
 
 }

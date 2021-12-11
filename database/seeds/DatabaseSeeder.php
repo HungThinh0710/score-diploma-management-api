@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersSeeder::class);
         // Pls run above command
         $this->call(RolesAndPermissionsSeeder::class);
+        $this->call(MajorAndSubjectSeeder::class);
 //        php artisan db:seed --class=RolesAndPermissionsSeeder
 
     }

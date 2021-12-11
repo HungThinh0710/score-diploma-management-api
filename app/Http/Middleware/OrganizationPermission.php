@@ -9,14 +9,17 @@ class OrganizationPermission
     public function handle($request, Closure $next)
     {
         if(!empty(auth()->user())){
-            if(session('org_id') == null){
-                abort(response()->json([
-                    'success' => false,
-                    'message' => 'Session has been expired, please login again!'
-                ], 403));
-            }
-            // Session value set on login
-            app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId(session('org_id'));
+            // Stop using session
+//            if(session('org_id') == null){
+//                abort(response()->json([
+//                    'success' => false,
+//                    'message' => 'Session has been expired, please login again!',
+//                    'code'    => 98
+//                ], 403));
+//            }
+            // Using org_id from a request instead of session
+            $orgId = $request->user()->org_id;
+            app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($orgId);
         }
         return $next($request);
     }
