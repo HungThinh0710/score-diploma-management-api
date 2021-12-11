@@ -46,9 +46,12 @@ Route::group(['prefix' => 'client'], function(){
 
         });
 
-        // Permission
-        Route::group(['prefix' => 'permissions'], function(){
-            Route::get('/', 'API\Client\PermissionController@index')->name('permission.list');
+        // Major
+        Route::group(['prefix' => 'majors'], function(){
+            Route::get('/', 'API\Client\MajorController@index')->name('major.list');
+            Route::post('/', 'API\Client\MajorController@create')->name('major.create');
+            Route::patch('/', 'API\Client\MajorController@update')->name('major.update');
+            Route::delete('/', 'API\Client\MajorController@delete')->name('major.delete');
         });
 
         // ClassRoom
@@ -58,6 +61,8 @@ Route::group(['prefix' => 'client'], function(){
             Route::patch('/', 'API\Client\ClassRoomController@update')->name('classroom.update');
             //...
         });
+
+        // Subject
 
         // Transcript
         Route::group(['prefix' => 'transcripts'], function(){
@@ -83,17 +88,17 @@ Route::group(['prefix' => 'client'], function(){
 //            //...
 //        });
 
-        // Permissions
-        Route::group(['prefix' => 'permissions'], function(){
-            Route::get('/', 'API\Client\PermissionController@index')->name('permission.list');
-        });
-
         // Roles
         Route::group(['prefix' => 'roles'], function(){
             Route::get('/', 'API\Client\RoleController@index')->name('role.list');
             Route::post('/', 'API\Client\RoleController@create')->name('role.create');
             Route::patch('/', 'API\Client\RoleController@update')->name('role.update');
             Route::delete('/', 'API\Client\RoleController@delete')->name('role.delete');
+        });
+
+        // Permissions
+        Route::group(['prefix' => 'permissions'], function(){
+            Route::get('/', 'API\Client\PermissionController@index')->name('permission.list');
         });
 
         // Integrated API

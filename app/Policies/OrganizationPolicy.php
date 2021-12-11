@@ -40,8 +40,6 @@ class OrganizationPolicy
 
     public function users(User $user)
     {
-        return response()->json($user->roles());
         return $user->can('view user organization') ? Response::allow() : Response::deny(self::DENY_PERMISSION_MESSAGE);
-
     }
 }
