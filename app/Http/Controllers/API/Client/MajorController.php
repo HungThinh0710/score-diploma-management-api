@@ -13,8 +13,7 @@ class MajorController extends Controller
 {
     public function index(Request $request)
     {
-        // TODO: Permission
-//        $this->authorize('view', Major::class);
+        $this->authorize('view', Major::class);
         $orgId = $request->user()->org_id;
         $major = Major::with(['classes', 'subjects'])->where('org_id', $orgId)->paginate($request->input('perpage'));
         return response()->json([
@@ -26,7 +25,7 @@ class MajorController extends Controller
 
     public function create(CreateMajorRequest $request)
     {
-//        $this->authorize('create', Major::class); // TODO: Enable this
+        $this->authorize('create', Major::class); // TODO: Enable this
         $major = Major::create([
             'org_id' => $request->user()->org_id,
             'major_name' => $request->input('major_name'),
@@ -42,8 +41,8 @@ class MajorController extends Controller
     public function update(UpdateMajorRequest $request)
     {
         $payload = array_filter($request->only('major_name', 'major_code'), 'strlen');
-        $major = Major::where('id', $request->input('major_id'))->first();
-//        $this->authorize('update', [Major::class, $major]); // TODO: Enable this
+        $major = Major::findOrFail($request->input('major_id'));
+        $this->authorize('update',  $major);
         $isUpdated = $major->update($payload);
         if($isUpdated)
             return response()->json([
@@ -60,7 +59,7 @@ class MajorController extends Controller
     public function delete(DeleteMajorRequest $request)
     {
         $major = Major::findOrFail($request->input('major_id'));
-//        $this->authorize('delete', [Major::class, $major]); // TODO: Enable this
+        $this->authorize('delete', $major);
         $major->delete();
         return response()->json([
             'success' => true,

@@ -13,7 +13,7 @@ class DeleteSubjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class DeleteSubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'subject_id' => 'required|exists:App\Subject,id',
         ];
     }
 }

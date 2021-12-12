@@ -21,7 +21,7 @@ class CreateSubjectsTable extends Migration
                 ->onDelete('cascade');
             $table->string('subject_name');
             $table->string('subject_code');
-            $table->string('credit')->default(1);
+            $table->unsignedInteger('credit')->default(1);
         });
     }
 

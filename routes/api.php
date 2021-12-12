@@ -54,6 +54,15 @@ Route::group(['prefix' => 'client'], function(){
             Route::delete('/', 'API\Client\MajorController@delete')->name('major.delete');
         });
 
+        // Subject
+        Route::group(['prefix' => 'subjects'], function (){
+            Route::get('/', 'API\Client\SubjectController@index')->name('subject.list');
+            Route::post('/', 'API\Client\SubjectController@create')->name('subject.create.single');
+//            Route::post('/multiple', 'API\Client\SubjectController@createMultipleSubject')->name('subject.create.multiple');
+            Route::patch('/', 'API\Client\SubjectController@update')->name('subject.update');
+            Route::delete('/', 'API\Client\SubjectController@delete')->name('subject.delete');
+        });
+
         // ClassRoom
         Route::group(['prefix' => 'classrooms'], function(){
             Route::get('/', 'API\Client\ClassRoomController@showListClassRoom')->name('classroom.list');

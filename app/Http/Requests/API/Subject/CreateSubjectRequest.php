@@ -13,7 +13,7 @@ class CreateSubjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class CreateSubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "major_id"     => "required|exists:App\Subject,id",
+            "subject_name" => "required|string",
+            "subject_code" => "required|string",
+            "credit"       => "required|numeric|min:0",
         ];
     }
 }

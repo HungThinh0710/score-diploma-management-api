@@ -31,4 +31,26 @@ class MajorPolicy
     {
         return $user->can('view major') ? Response::allow() : Response::deny(self::DENY_PERMISSION_MESSAGE);
     }
+
+    public function create(User $user)
+    {
+        return $user->can('create major') ? Response::allow() : Response::deny(self::DENY_PERMISSION_MESSAGE);
+    }
+
+    public function update(User $user, Major $major)
+    {
+        if($user->can('update major')){
+            return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exist in your organization');
+        }
+        return self::DENY_PERMISSION_MESSAGE;
+    }
+
+    public function delete(User $user, Major $major)
+    {
+        if($user->can('delete major')){
+            return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exist in your organization');
+        }
+        return self::DENY_PERMISSION_MESSAGE;
+    }
+
 }
