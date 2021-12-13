@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Major\AssignSubjectRequest;
 use App\Http\Requests\API\Major\CreateMajorRequest;
 use App\Http\Requests\API\Major\DeleteMajorRequest;
 use App\Http\Requests\API\Major\UpdateMajorRequest;
 use App\Major;
+use App\Subject;
 use Illuminate\Http\Request;
 
 class MajorController extends Controller
@@ -65,5 +67,24 @@ class MajorController extends Controller
             'success' => true,
             'message' => 'Deleted major successfully.',
         ], 200);
+    }
+
+    public function assignSubject(AssignSubjectRequest $request)
+    {
+        $subjects = $request->input('subjects');
+        $majorId = $request->input('major_id');
+
+        $major = Major::findOrFail($majorId);
+        $this->authorize('assign', $major);
+        if(sizeof($subjects) > 0)
+            $this->authorize('assign', [Subject::class, $subjects]);
+
+        $major->subjects()->sync($subjects
+        );
+        return response()->json([
+            'success' => true,
+            'message' => 'Assign your subject(s) to '.$major->major_name.' successfully.',
+            'major'   => $major
+        ]);
     }
 }

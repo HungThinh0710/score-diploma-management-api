@@ -50,6 +50,7 @@ Route::group(['prefix' => 'client'], function(){
         Route::group(['prefix' => 'majors'], function(){
             Route::get('/', 'API\Client\MajorController@index')->name('major.list');
             Route::post('/', 'API\Client\MajorController@create')->name('major.create');
+            Route::post('/assign', 'API\Client\MajorController@assignSubject')->name('major.assign');
             Route::patch('/', 'API\Client\MajorController@update')->name('major.update');
             Route::delete('/', 'API\Client\MajorController@delete')->name('major.delete');
         });

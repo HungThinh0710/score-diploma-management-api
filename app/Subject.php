@@ -11,9 +11,14 @@ class Subject extends Model
     public $incrementing = true;
     public $timestamps = false;
 
-    public function major()
-    {
-        return $this->belongsTo('App\Major', 'major_id', 'id');
-    }
+//    public function major()
+//    {
+//        return $this->belongsTo('App\Major', 'major_id', 'id');
+//    }
+//
+//    public function majors()
+//    {
+//        return $this->belongsToMany('App\Major', 'major_subject', 'major_id', 'subject_id');
+//    }
 
 }

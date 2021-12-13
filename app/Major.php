@@ -23,7 +23,7 @@ class Major extends Model
 
     public function subjects()
     {
-        return $this->hasMany('App\Subject', 'major_id','id');
+        return $this->belongsToMany('App\Subject', 'major_subject', 'major_id', 'subject_id');
     }
 
 }

@@ -17,9 +17,13 @@ class SubjectController extends Controller
     {
         $this->authorize('view', Subject::class);
         $orgId = $request->user()->org_id;
-        $subject = Subject::with('major')->whereHas('major', function ($q) use ($orgId) {
-            $q->where('org_id', $orgId);
-        })->paginate($request->input('perpage'));
+
+//        $subject = Subject::with('majors')->whereHas('majors', function ($q) use ($orgId) {
+//            $q->where('org_id', $orgId);
+//        })->paginate($request->input('perpage'));
+
+        $subject = Subject::where('org_id', $orgId)->paginate($request->input('perpage'));
+
         return response()->json([
             'success'  => true,
             'message'  => 'Get list subjects successfully.',
@@ -30,9 +34,9 @@ class SubjectController extends Controller
     public function create(CreateSubjectRequest $request)
     {
         $major = Major::findOrFail($request->input('major_id'));
-        $this->authorize('checkMajorWithId', $major);
         $this->authorize('create', Subject::class);
-        $major = Subject::create($request->only('major_id','subject_name', 'subject_code','credit'));
+        $request->merge('org_id', $request->user()->org_id);
+        $major = Subject::create($request->only('subject_name', 'subject_code','credit'));
         return response()->json([
             'success'  => true,
             'message'  => 'Create subject successfully.',

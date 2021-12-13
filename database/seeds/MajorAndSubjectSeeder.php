@@ -37,24 +37,24 @@ class MajorAndSubjectSeeder extends Seeder
 
         // Subjects
         DB::table('subjects')->insert([
-            'major_id'     => 1,
+            'org_id'      => 1,
             'subject_name' => 'Lập trình hướng đối tượng và Java Cơ Bản',
             'subject_code' => 'JAVA_17_2',
             'credit'       => 4
         ]);
         DB::table('subjects')->insert([
-            'major_id'     => 1,
+            'org_id'      => 1,
             'subject_name' => 'Đại số',
             'subject_code' => 'DAISO_17_2',
             'credit'       => 3
         ]);
 
         DB::table('subjects')->insert([
-            'major_id'     => 2,
+            'org_id'      => 1,
             'subject_name' => 'Toán cao cấp',
             'subject_code' => 'SUPER_MATH2',
             'credit'       => 3
         ]);
-        
+
     }
 }

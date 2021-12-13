@@ -35,7 +35,7 @@ class SubjectPolicy
     public function update(User $user, Subject $subject)
     {
         if($user->can('update subject')){
-            return $user->org_id == $subject->major->org_id ? Response::allow() : Response::deny('This subject is not exist in your organization.');
+            return $user->org_id == $subject->major->org_id ? Response::allow() : Response::deny('This subject is not exists in your organization.');
         }
         return self::DENY_PERMISSION_MESSAGE;
     }
@@ -43,7 +43,16 @@ class SubjectPolicy
     public function delete(User $user, Subject $subject)
     {
         if($user->can('delete subject')){
-            return $user->org_id == $subject->major->org_id ? Response::allow() : Response::deny('This subject is not exist in your organization.');
+            return $user->org_id == $subject->major->org_id ? Response::allow() : Response::deny('This subject is not exists in your organization.');
+        }
+        return self::DENY_PERMISSION_MESSAGE;
+    }
+
+    public function assign(User $user, $subjects){
+        if($user->can('assign subject')){
+            sort($subjects);
+            $validSubject = Subject::where('org_id', $user->org_id)->whereIn('id', $subjects)->pluck('id')->toArray();
+            return ($validSubject == $subjects) ? Response::allow() : Response::deny('A subject is not exists in your organization.');
         }
         return self::DENY_PERMISSION_MESSAGE;
     }

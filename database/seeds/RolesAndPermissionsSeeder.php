@@ -30,6 +30,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         //--- Major
         Permission::create(['name' => 'create major', 'guard_name' => 'web']);
+        Permission::create(['name' => 'assign subject', 'guard_name' => 'web']);
         Permission::create(['name' => 'view major', 'guard_name' => 'web']);
         Permission::create(['name' => 'edit major', 'guard_name' => 'web']);
         Permission::create(['name' => 'delete major', 'guard_name' => 'web']);

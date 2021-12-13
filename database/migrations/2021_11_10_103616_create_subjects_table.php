@@ -15,9 +15,13 @@ class CreateSubjectsTable extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('major_id');
-            $table->foreign('major_id')
-                ->references('id')->on('majors')
+//            $table->unsignedBigInteger('major_id');
+//            $table->foreign('major_id')
+//                ->references('id')->on('majors')
+//                ->onDelete('cascade');
+            $table->unsignedBigInteger('org_id');
+            $table->foreign('org_id')
+                ->references('id')->on('organizations')
                 ->onDelete('cascade');
             $table->string('subject_name');
             $table->string('subject_code');

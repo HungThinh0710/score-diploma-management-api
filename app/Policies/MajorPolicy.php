@@ -40,7 +40,7 @@ class MajorPolicy
     public function update(User $user, Major $major)
     {
         if($user->can('update major')){
-            return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exist in your organization');
+            return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exists in your organization');
         }
         return self::DENY_PERMISSION_MESSAGE;
     }
@@ -48,7 +48,15 @@ class MajorPolicy
     public function delete(User $user, Major $major)
     {
         if($user->can('delete major')){
-            return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exist in your organization');
+            return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exists in your organization');
+        }
+        return self::DENY_PERMISSION_MESSAGE;
+    }
+
+    public function assign(User $user, Major $major)
+    {
+        if($user->can('assign subject')){
+            return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exists in your organization');
         }
         return self::DENY_PERMISSION_MESSAGE;
     }

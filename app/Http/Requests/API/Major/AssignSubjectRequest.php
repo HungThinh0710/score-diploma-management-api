@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\API\Subject;
+namespace App\Http\Requests\API\Major;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateSubjectRequest extends FormRequest
+class AssignSubjectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class CreateSubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            "subject_name" => "required|string",
-            "subject_code" => "required|string",
-            "credit"       => "required|numeric|min:0",
+            'major_id' => 'required|exists:App\Major,id',
+            'subjects' => 'array|min:0'
         ];
     }
 }
