@@ -31,7 +31,7 @@ class ClassRoomController extends Controller
         $this->authorize('checkMajorWithId', $major);
         $this->authorize('create', ClassRoom::class);
         $request->merge(['org_id' => $request->user()->org->id]);
-        $payloads = $request->all();
+        $payloads = $request->only("class_name", "major_id", "start_year", "code", "org_id");
         ClassRoom::create($payloads);
         return response()->json([
             'success' => true,

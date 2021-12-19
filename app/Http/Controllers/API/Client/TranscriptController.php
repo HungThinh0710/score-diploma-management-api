@@ -16,6 +16,7 @@ use App\Transcript;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class TranscriptController extends Controller
 {
@@ -33,16 +34,18 @@ class TranscriptController extends Controller
     private function inQueueSubmit($payload, $type): JsonResponse
     {
         try {
+            $transcriptEncrypted = Crypt::encryptString(json_encode($payload['transcript']));
             InQueueTranscript::create([
                 'class_id'        => $payload['class_id'],
                 'student_code'    => $payload['student_code'],
                 'student_name'    => $payload['student_name'],
                 'type'            => $type,
-                'transcript'      => json_encode($payload['transcript'])
+//                'transcript'      => json_encode($payload['transcript'])
+                'transcript'      => json_encode($transcriptEncrypted)
             ]);
             return response()->json([
                 'success' => true,
-                'message' => 'Submit transcript successfully.',
+                'message' => 'Submit transcript successfully (Waiting approve).',
                 'type'    => 'Waiting approve'
             ], 201);
         }
@@ -127,6 +130,29 @@ class TranscriptController extends Controller
         return $this->inQueueSubmit($payload, self::NEW_TRANSCRIPT_TYPE);
     }
 
+    public function submitRaw(SubmitNewTranscriptRequest $request): JsonResponse
+    {
+        $isTranscriptExisted = $this->isTranscriptExists($request->input('student_code'));
+        if($isTranscriptExisted)
+            return response()->json([
+                'success' => false,
+                'data'    => null,
+                'message' => 'StudentID: '.$request->input('student_code').' is already exist in transcripts.',
+                'code'    => 2,
+            ], 422);
+
+        $orgSettings = $this->getOrgSetting($request->user()->org_id);
+        $class = ClassRoom::find($request->input('class_id'));
+        $payload = $request->only('class_id', 'student_code', 'student_name', 'transcript');
+        if($orgSettings->is_direct_submit_transcript){
+            $this->authorize('submit', [Transcript::class, $class]);
+            return $this->directSubmit($payload, $class);
+        }
+
+        $this->authorize('submit', [InQueueTranscript::class, $class]);
+        return $this->inQueueSubmit($payload, self::NEW_TRANSCRIPT_TYPE);
+    }
+
     public function getByStudentCode(GetTranscriptByStudentCodeRequest $request)
     {
         $transcript = Transcript::where('student_code', $request->only('student_code'))->first();
@@ -159,12 +185,13 @@ class TranscriptController extends Controller
         $trxID = ['trxID' => $transcript->trxID];
         $result = $this->postAPI(API::GET_DETAIL_TRANSCRIPT, null, $trxID, true);
         if($result->success){
-            $transcript = $result->response;
+            $transcriptBlockchain = $result->response;
             return response()->json([
                 'success'       => true,
                 'message'       => 'Get transcript from Blockchain API successfully.',
                 'code'          => 0,
-                'transcript'    => $transcript,
+                'data'    => $transcriptBlockchain,
+                'student_in_db' => $transcript
             ]);
         }
         return response()->json([

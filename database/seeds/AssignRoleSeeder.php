@@ -14,7 +14,9 @@ class AssignRoleSeeder extends Seeder
      */
     public function run()
     {
-        $admin = User::findOrFail(7);
+
+        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        $admin = User::findOrFail(10);
         $user = User::findOrFail(2);
 
         app(PermissionRegistrar::class)->setPermissionsTeamId(1);

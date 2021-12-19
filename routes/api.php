@@ -69,6 +69,7 @@ Route::group(['prefix' => 'client'], function(){
             Route::get('/', 'API\Client\ClassRoomController@showListClassRoom')->name('classroom.list');
             Route::post('/', 'API\Client\ClassRoomController@create')->name('classroom.create');
             Route::patch('/', 'API\Client\ClassRoomController@update')->name('classroom.update');
+            Route::delete('/', 'API\Client\ClassRoomController@delete')->name('classroom.delete');
             //...
         });
 
@@ -81,6 +82,7 @@ Route::group(['prefix' => 'client'], function(){
             Route::get('/get-by-trxid', 'API\Client\TranscriptController@getByTrxId')->name('transcript.get-by-trxid');
             Route::post('/history', 'API\Client\TranscriptController@history')->name('transcript.history');
             Route::post('/submit', 'API\Client\TranscriptController@submit')->name('transcript.submit');
+            Route::post('/submit-raw', 'API\Client\TranscriptController@submitRaw')->name('transcript.submit.raw');
             Route::patch('/update', 'API\Client\TranscriptController@update')->name('transcript.update');
 //            Route::delete('/', 'API\Client\TranscriptController@index')->name('transcript.delete');
         });
