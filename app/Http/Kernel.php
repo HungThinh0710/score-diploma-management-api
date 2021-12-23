@@ -58,6 +58,14 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         ],
 
+        'auth.api-admin' => [
+            \App\Http\Middleware\AddAdminAuthenticateHeader::class,
+            'throttle:1920,1',
+            'bindings',
+            'auth:api-admin',
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        ],
+
     ];
 
     /**
@@ -78,7 +86,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-
+        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
+        'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
         // Custom
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
@@ -95,6 +104,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewarePriority = [
         \App\Http\Middleware\AddAuthenticateHeader::class,
+        \App\Http\Middleware\AddAdminAuthenticateHeader::class,
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,

@@ -96,8 +96,8 @@ class Handler extends ExceptionHandler
                 'code' => 99
             ], 401);
         }
-        if ($request->is('admincp') || $request->is('admincp/*')) {
-            return redirect()->guest(route('admin_show_login'));
+        if ($request->is('admin') || $request->is('admin/*')) {
+            return redirect()->guest('/login/admin');
         }
 
         return redirect()->guest(route('org_show_login'));

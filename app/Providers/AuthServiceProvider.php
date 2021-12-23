@@ -20,7 +20,6 @@ use App\Policies\MajorPolicy;
 use App\Policies\SubjectPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Schema;
 use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
@@ -50,7 +49,17 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Passport::routes();
-        Schema::defaultStringLength(191);
+
+
+        Passport::tokensCan([
+            'user' => 'Access user API',
+            'admin' => 'Access admin API',
+        ]);
+
+        Passport::setDefaultScope([
+            'user',
+        ]);
+
 
         // Implicitly grant "Admin" role all permission checks using can()
         // Do not use this, this make Policies will not working!!

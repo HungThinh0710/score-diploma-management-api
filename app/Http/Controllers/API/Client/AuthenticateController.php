@@ -88,6 +88,7 @@ class AuthenticateController extends Controller
             'credentials' => false,
         ], 400);
     }
+
     private function getCookieDetails($token)
     {
         return [
