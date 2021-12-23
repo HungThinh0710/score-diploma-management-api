@@ -15,6 +15,10 @@ class CreateOrganizationsTable extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('setting_id');
+            $table->foreign('setting_id')
+                ->references('id')->on('organization_settings')
+                ->onDelete('cascade');
             $table->string('org_name');
             $table->string('org_code');
             $table->string('org_prefix');

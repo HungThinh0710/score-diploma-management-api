@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            'throttle:1920,1',
 //            'bindings',
 //            \Illuminate\Session\Middleware\StartSession::class, //DO NOT REMOVE THIS -> COOKIE SET THROUGH SESSION
             \Illuminate\Routing\Middleware\SubstituteBindings::class,

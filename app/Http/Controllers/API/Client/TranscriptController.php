@@ -211,7 +211,7 @@ class TranscriptController extends Controller
         })->paginate($request->input('perpage'));
     }
 
-    public function history(Request $request)
+    public function history(GetTranscriptByStudentCodeRequest $request)
     {
         $this->authorize('history transcript', Transcript::class); //TODO: NOT YET
         $studentID = ['studentID' => $request->user()->org->org_code.'_'.$request->input('student_code')];

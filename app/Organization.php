@@ -9,7 +9,7 @@ class Organization extends Model
     protected $table = "organizations";
 
     protected $fillable = [
-        'org_name', 'org_code', 'org_prefix', 'org_email', 'is_active', 'email', 'email_domain', 'status', 'description', 'address'
+        'org_name', 'setting_id', 'org_code', 'org_prefix', 'org_email', 'is_active', 'email', 'email_domain', 'status', 'description', 'address'
     ];
     public $incrementing = true;
     public $timestamps = true;
@@ -26,7 +26,7 @@ class Organization extends Model
 
     public function setting()
     {
-        return $this->hasOne('App\Setting', 'org_id','id');
+        return $this->hasOne('App\OrganizationSettings', 'id','setting_id');
     }
 }
 

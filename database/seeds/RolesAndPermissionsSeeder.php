@@ -27,6 +27,8 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'edit organization', 'guard_name' => 'web']);
         Permission::create(['name' => 'active organization', 'guard_name' => 'web']);
         Permission::create(['name' => 'view user organization', 'guard_name' => 'web']);
+        Permission::create(['name' => 'view setting organization', 'guard_name' => 'web']);
+        Permission::create(['name' => 'change setting organization', 'guard_name' => 'web']);
 
         //--- Major
         Permission::create(['name' => 'create major', 'guard_name' => 'web']);

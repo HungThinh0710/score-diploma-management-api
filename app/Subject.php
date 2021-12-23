@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subject extends Model
 {
     protected $table = 'subjects';
-    protected $fillable = ['major_id', 'subject_name', 'subject_code', 'credit'];
+    protected $fillable = ['org_id', 'subject_name', 'subject_code', 'credit'];
     public $incrementing = true;
     public $timestamps = false;
 
@@ -16,9 +16,9 @@ class Subject extends Model
 //        return $this->belongsTo('App\Major', 'major_id', 'id');
 //    }
 //
-//    public function majors()
-//    {
-//        return $this->belongsToMany('App\Major', 'major_subject', 'major_id', 'subject_id');
-//    }
+    public function majors()
+    {
+        return $this->belongsToMany('App\Major', 'major_subject', 'subject_id', 'major_id');
+    }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Traits;
 use App\BlockchainToken;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
@@ -62,6 +63,14 @@ trait BlockchainExecutionTrait{
         catch (ClientException $e){
             echo Psr7\Message::toString($e->getRequest());
             echo Psr7\Message::toString($e->getResponse());
+        }
+        catch (ConnectException $ex){
+            $errors = new stdClass();
+            $errors->code = 100;
+            $errors->data = null;
+            $errors->success = false;
+            $errors->errorMessage = "Can not connect to Blockchain API.";
+            return $this->returnObject(false, $errors);
         }
     }
 

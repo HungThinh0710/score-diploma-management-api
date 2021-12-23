@@ -17,41 +17,50 @@ class SubjectController extends Controller
     {
         $this->authorize('view', Subject::class);
         $orgId = $request->user()->org_id;
+        $classId = $request->input('class_id');
+        if($request->has('class_id')){
+            $subjects = Subject::with('majors.classes')->whereHas('majors.classes', function ($q) use ($orgId, $classId){
+//            $q->where('id', '17IT1');
+                return $q->where('classes.id', $classId);
 
-//        $subject = Subject::with('majors')->whereHas('majors', function ($q) use ($orgId) {
-//            $q->where('org_id', $orgId);
-//        })->paginate($request->input('perpage'));
+            })
+                ->where('org_id', $orgId)
+                ->paginate($request->input('perpage'));
+        }
+        else{
+             $subjects = Subject::with('majors')->where('org_id', $orgId)->paginate($request->input('perpage'));
+        }
 
-        $subject = Subject::where('org_id', $orgId)->paginate($request->input('perpage'));
+
+//        dd($subjects);
 
         return response()->json([
             'success'  => true,
             'message'  => 'Get list subjects successfully.',
-            'subjects' => $subject,
+            'subjects' => $subjects,
         ]);
     }
 
     public function create(CreateSubjectRequest $request)
     {
-        $major = Major::findOrFail($request->input('major_id'));
         $this->authorize('create', Subject::class);
-        $request->merge('org_id', $request->user()->org_id);
-        $major = Subject::create($request->only('subject_name', 'subject_code','credit'));
+        $request->merge(['org_id' => $request->user()->org_id]);
+        $subject = Subject::create($request->only('org_id', 'subject_name', 'subject_code', 'credit'));
         return response()->json([
             'success'  => true,
             'message'  => 'Create subject successfully.',
-            'subject'  => $major,
+            'subject'  => $subject,
         ], 201);
     }
 
     public function update(UpdateSubjectRequest $request)
     {
-        $major = Major::find($request->input('major_id'));
-        if($major)
-            $this->authorize('checkMajorWithId', $major);
+//        $major = Major::find($request->input('major_id'));
+//        if($major)
+//            $this->authorize('checkMajorWithId', $major);
         $subject = Subject::findOrFail($request->input('subject_id'));
         $this->authorize('update', $subject);
-        $payload = array_filter($request->only('major_id', 'subject_name', 'subject_code', 'credit'), 'strlen');
+        $payload = array_filter($request->only('subject_name', 'subject_code', 'credit'), 'strlen');
         $isUpdated = $subject->update($payload);
         if($isUpdated)
             return response()->json([

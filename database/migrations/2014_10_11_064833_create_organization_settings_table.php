@@ -15,10 +15,6 @@ class CreateOrganizationSettingsTable extends Migration
     {
         Schema::create('organization_settings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('org_id');
-            $table->foreign('org_id')
-                ->references('id')->on('organizations')
-                ->onDelete('cascade');
             $table->boolean('is_direct_submit_transcript')->default(false);
             $table->boolean('is_activate_email_domain')->default(false);;
         });

@@ -16,7 +16,7 @@ class AssignRoleSeeder extends Seeder
     {
 
         app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-        $admin = User::findOrFail(10);
+        $admin = User::findOrFail(7);
         $user = User::findOrFail(2);
 
         app(PermissionRegistrar::class)->setPermissionsTeamId(1);
