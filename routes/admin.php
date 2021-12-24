@@ -11,27 +11,19 @@
 |
 */
 
-Route::group(['prefix' => 'admin'], function(){
+Route::group(['prefix' => 'admin'], function () {
 
-    Route::group(['prefix' => 'auth'], function(){
-        Route::post('login', 'API\Admin\AuthenticateController@login');
-        Route::post('register', 'API\Admin\AuthenticateController@register');
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('login', 'API\Admin\AuthenticateController@login')->name('admin.auth.register.dev');;
+        Route::post('register', 'API\Admin\AuthenticateController@register')->name('admin.auth.login');;
     });
 
-    Route::group(['middleware' => ['auth.api-admin', 'scope:admin']], function(){
-        Route::get('/test', function (){
-           return "passed";
+    Route::group(['middleware' => ['auth.api-admin', 'scope:admin']], function () {
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('/', 'API\Admin\UserController@index')->name('admin.users.list');
+            //...
         });
     });
 
-        Route::group(['middleware' => 'auth.api-admin'], function() {
-
-//        Route::group(['prefix' => 'users'], function(){
-//            Route::get('/', 'API\Client\UserController@index')->name('users.list');
-//            //...
-//        });
-
-
-    });
 });
 

@@ -4,7 +4,7 @@ namespace App;
 
 class API{
     //private const DOMAIN = "localhost:3000/api/v1"; // Development Local only.
-    private const DOMAIN = "104.46.228.10:3000/api/v1";
+    private const DOMAIN = "http://blockchain.hungthinhit.com/api/v1";
 
     public const LOGIN = self::DOMAIN.'/auth/login';
     public const REGISTER = self::DOMAIN.'/enrolls/register-user';
