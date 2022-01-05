@@ -37,7 +37,7 @@ trait BlockchainExecutionTrait{
 
     }
 
-    public function postAPI($endpoint, $headers, $payload, $authentication = false)
+    public function postAPI($endpoint, $headers = null, $payload = [], $authentication = false)
     {
         try {
             $client = new \GuzzleHttp\Client();

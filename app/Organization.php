@@ -9,7 +9,7 @@ class Organization extends Model
     protected $table = "organizations";
 
     protected $fillable = [
-        'org_name', 'setting_id', 'org_code', 'org_prefix', 'org_email', 'is_active', 'email', 'email_domain', 'status', 'description', 'address'
+        'org_name', 'setting_id', 'org_code', 'org_prefix', 'is_active', 'email', 'email_domain', 'status', 'description', 'address'
     ];
     public $incrementing = true;
     public $timestamps = true;

@@ -7,18 +7,21 @@ use App\Http\Requests\API\Role\CreateRoleRequest;
 use App\Http\Requests\API\Role\DeleteRoleRequest;
 use App\Http\Requests\API\Role\UpdateRoleRequest;
 use App\Role;
+use App\Permission;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('view',Role::class);
-        $roles = Role::where('org_id', session('org_id'))->get();
+        $this->authorize('view', Role::class);
+        $roles = Role::with('permissions')->where('org_id', $request->user()->org_id)->paginate($request->perpage);
+        $permissions = Permission::all();
         return response()->json([
             'success' => true,
             'message' => 'Get roles successfully.',
-            'roles' => $roles
+            'roles' => $roles,
+            'permissions' => $permissions,
         ]);
     }
 
@@ -29,7 +32,7 @@ class RoleController extends Controller
         $newRoles = Role::create([
             'name' => $request->input('name'),
             'guard_name' => 'web',
-            'org_id' => session('org_id')
+            'org_id' => $request->user()->org_id
         ]);
 
         return response()->json([

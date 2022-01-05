@@ -19,6 +19,14 @@ Route::group(['prefix' => 'admin'], function () {
     });
 
     Route::group(['middleware' => ['auth.api-admin', 'scope:admin']], function () {
+        
+        Route::group(['prefix' => 'organizations'], function () {
+            Route::get('/', 'API\Admin\OrganizationController@getOrganizations')->name('admin.organizations.list');
+            Route::post('/', 'API\Admin\OrganizationController@createOrganization')->name('admin.organizations.create');
+            Route::post('/deactivate', 'API\Admin\OrganizationController@deactivateOrganization')->name('admin.organizations.deactivate');
+            //...
+        });
+
         Route::group(['prefix' => 'users'], function () {
             Route::get('/', 'API\Admin\UserController@index')->name('admin.users.list');
             //...

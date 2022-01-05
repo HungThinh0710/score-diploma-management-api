@@ -157,7 +157,6 @@ class AuthenticateController extends Controller
             ],
             'wallet' => json_decode($wallet)
         ];
-
         $responseLogin = $this->postAPI(API::LOGIN, null, $payload, false);
         if($responseLogin->success == true){
             $token = Auth::user()->createToken('appToken');
@@ -183,9 +182,7 @@ class AuthenticateController extends Controller
                 'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
             ])->cookie($cookie['name'], $cookie['value'], $cookie['minutes'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'], $cookie['samesite']);
         }
-//        return Auth::user;
         Auth::logout();
-//        Auth::user()->token()->revoke(); // instead Auth::logout
 //        Auth::user()->token()->revoke(); // instead Auth::logout
         return response()->json([
             'success' => false,
