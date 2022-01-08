@@ -35,8 +35,23 @@ class RolePolicy
 
     public function update(User $user, Role $role)
     {
-        if($user->can('edit role'))
+        if ($user->can('edit role'))
             return $user->org_id == $role->org_id ? Response::allow() : Response::deny(self::DENY_PERMISSION_MESSAGE);
         return Response::deny(self::DENY_PERMISSION_MESSAGE);
+    }
+
+    public function delete(User $user, Role $role)
+    {
+        if ($user->can('delete role'))
+            return $user->org_id == $role->org_id ? Response::allow() : Response::deny(self::DENY_PERMISSION_MESSAGE);
+        return Response::deny(self::DENY_PERMISSION_MESSAGE);
+    }
+
+    public function managePermissionRole(User $user, Role $role)
+    {
+        if ($user->can('manage permission role'))
+            return $user->org_id == $role->org_id ? Response::allow() : Response::deny(self::DENY_PERMISSION_MESSAGE);
+        return Response::deny(self::DENY_PERMISSION_MESSAGE);
+
     }
 }

@@ -28,5 +28,11 @@ class Organization extends Model
     {
         return $this->hasOne('App\OrganizationSettings', 'id','setting_id');
     }
+
+    public function apis()
+    {
+        return $this->hasMany('App\IntegrationAPI', 'org_id','id');
+    }
+
 }
 

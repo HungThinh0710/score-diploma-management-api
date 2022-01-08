@@ -23,16 +23,16 @@ Route::group(['prefix' => 'client'], function(){
 
     Route::group(['prefix' => 'auth'], function(){
         Route::post('login', 'API\Client\AuthenticateController@login');
-        Route::post('register', 'API\Client\AuthenticateController@register');
-    });
-
-    // BETA WITHOUT LOGIN
-    Route::group(['prefix' => 'organization'], function(){
-//        Route::get('/users', 'API\Client\OrganizationController@users')->name('organization.users');
+        Route::post('login-api', 'API\Client\AuthenticateController@loginAPI');
+        Route::post('register', 'API\Client\AuthenticateController@register'); //BETA DEV
     });
 
     Route::group(['middleware' => 'auth.api'], function() {
 
+        // Enroll user
+        Route::post('enroll/user', 'API\Client\AuthenticateController@enrollUser');
+
+        // Users
         Route::group(['prefix' => 'users'], function(){
             Route::get('/', 'API\Client\UserController@index')->name('users.list');
             //...
@@ -75,8 +75,6 @@ Route::group(['prefix' => 'client'], function(){
             //...
         });
 
-        // Subject
-
         // Transcript
         Route::group(['prefix' => 'transcripts'], function(){
             Route::get('/get-all', 'API\Client\TranscriptController@index')->name('transcript.list');
@@ -96,17 +94,13 @@ Route::group(['prefix' => 'client'], function(){
             //...
         });
 
-//        // Users
-//        Route::group(['prefix' => 'users'], function(){
-//            Route::get('/', 'API\Client\UserController@index')->name('users.list');
-//            //...
-//        });
-
         // Roles
         Route::group(['prefix' => 'roles'], function(){
             Route::get('/', 'API\Client\RoleController@index')->name('role.list');
             Route::post('/', 'API\Client\RoleController@create')->name('role.create');
-            Route::patch('/', 'API\Client\RoleController@update')->name('role.update');
+            Route::post('/sync', 'API\Client\RoleController@updatePermissionForRole')->name('role.sync.specific');
+            Route::post('/sync-all-permissions', 'API\Client\RoleController@syncAllPermissionForRole')->name('role.sync.all');
+            Route::patch('/', 'API\Client\RoleController@update')->name('role.update.role');
             Route::delete('/', 'API\Client\RoleController@delete')->name('role.delete');
         });
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Client;
+namespace App\Http\Controllers\API\Integrate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Role\CreateRoleRequest;
@@ -16,8 +16,7 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('view', Role::class);
-        $roles = Role::with('permissions')->where('org_id', $request->user()->org_id)->paginate($request->perpage);
+        $roles = Role::with('permissions')->where('org_id', $request->integrate->org_id)->paginate($request->perpage);
         $permissions = Permission::all();
         return response()->json([
             'success' => true,
@@ -29,12 +28,10 @@ class RoleController extends Controller
 
     public function create(CreateRoleRequest $request)
     {
-        $this->authorize('create', Role::class);
-
         $newRoles = Role::create([
             'name' => $request->input('name'),
             'guard_name' => 'web',
-            'org_id' => $request->user()->org_id
+            'org_id' => $request->integrate->org_id
         ]);
 
         return response()->json([
@@ -46,16 +43,13 @@ class RoleController extends Controller
 
     public function update(UpdateRoleRequest $request)
     {
-//        $role = Role::findOrFail($request->input('role_id'));
-        $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
+        $role = Role::where('org_id', $request->integrate->org_id)->where('id', $request->input('role_id'))->first();
 
         if ($role->name == $request->input('name'))
             return response()->json([
                 'success' => false,
                 'message' => 'New role name must different with old role.',
             ], 400);
-
-        $this->authorize('update', $role);
 
         $role->update(['name' => $request->input('name')]);
         if ($role->update(['name' => $request->input('name')]))
@@ -71,8 +65,7 @@ class RoleController extends Controller
 
     public function delete(DeleteRoleRequest $request)
     {
-        $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
-        $this->authorize('delete', $role);
+        $role = Role::where('org_id', $request->integrate->org_id)->where('id', $request->input('role_id'))->first();
         $role->revokePermissionTo(Permission::all());
         $role->delete();
         return response()->json([
@@ -84,8 +77,7 @@ class RoleController extends Controller
 
     public function updatePermissionForRole(UpdatePermissionForRoleRequest $request)
     {
-        $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
-        $this->authorize('managePermissionRole', $role);
+        $role = Role::where('org_id', $request->integrate->org_id)->where('id', $request->input('role_id'))->first();
         $permissions = $request->input('permissions');
         $permissionsDBArray = Permission::whereIn('id', $permissions)->pluck('name')->toArray();
         $role->syncPermissions($permissionsDBArray);
@@ -99,8 +91,7 @@ class RoleController extends Controller
 
     public function syncAllPermissionForRole(SyncAllPermissionForRoleRequest $request)
     {
-        $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
-        $this->authorize('managePermissionRole', $role);
+        $role = Role::where('org_id', $request->integrate->org_id)->where('id', $request->input('role_id'))->first();
         $role->givePermissionTo(Permission::all());
         app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
         return response()->json([

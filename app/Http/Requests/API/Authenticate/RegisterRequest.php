@@ -24,7 +24,7 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'org_id' => 'required|integer',
+//            'org_id' => 'required|integer',
             'email' => 'required|string|max:50|unique:users',
             'full_name' => 'required|string|max:200',
             'password' => 'required|string|max:255'
@@ -42,7 +42,6 @@ class RegisterRequest extends FormRequest
             'email.unique' => 'Email is already exist.',
             'full_name.required' => 'Full name is required.',
             'full_name.string'  => 'Full name must be a string',
-
         ];
     }
 }

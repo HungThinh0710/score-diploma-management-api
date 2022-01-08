@@ -27,6 +27,7 @@ class MajorPolicy
         return $user->org_id == $major->org_id ? Response::allow() : Response::deny('This major is not exists in your organization');
     }
 
+
     public function view(User $user)
     {
         return $user->can('view major') ? Response::allow() : Response::deny(self::DENY_PERMISSION_MESSAGE);

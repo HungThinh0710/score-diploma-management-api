@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Client;
+namespace App\Http\Controllers\API\Integrate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Organization\UpdateOrganizationRequest;
@@ -17,8 +17,7 @@ class OrganizationController extends Controller
 
     public function index(ViewOrganizationRequest $request)
     {
-        $org = Organization::findOrFail($request->user()->org_id);
-        $this->authorize('view', $org);
+        $org = Organization::where('id', $request->integrate->org_id)->firstOrFail();
         return response()->json([
             'success' => true,
             'organization' => $org,
@@ -27,11 +26,9 @@ class OrganizationController extends Controller
 
     public function update(UpdateOrganizationRequest $request)
     {
-        $org = Organization::findOrFail($request->input('org_id'));
-        $this->authorize('update', $org);
+        $org = Organization::where('id', $request->integrate->org_id)->firstOrFail();
         $payload = array_filter($request->only('org_name', 'email', 'email_domain', 'description', 'address'), 'strlen');
         $org->update($payload);
-        // TODO edit org here
         return response()->json([
             'success' => true,
             'message' => 'Update organization successfully.',
@@ -41,8 +38,7 @@ class OrganizationController extends Controller
 
     public function users(Request $request)
     {
-        $this->authorize('users', Organization::class);
-        $users = User::with('roles')->where('org_id', $request->user()->org_id)->paginate($request->input('perpage')); // Use $request->org->user instead
+        $users = User::with('roles')->where('org_id', $request->integrate->org_id)->paginate($request->input('perpage')); // Use $request->org->user instead
         return response()->json([
             'success' => true,
             'message' => 'Get users in organization successfully.',
@@ -52,9 +48,7 @@ class OrganizationController extends Controller
 
     public function getSetting(Request $request)
     {
-//        $this->authorize('view');
-
-        $orgId = $request->user()->org_id;
+        $orgId = $request->integrate->org_id;
         $setting = $this->getOrgSetting($orgId);
         return response()->json([
             'success' => true,
@@ -66,9 +60,8 @@ class OrganizationController extends Controller
     public function changeSetting(Request $request)
     {
         $payload = array_filter($request->only('is_direct_submit_transcript', 'is_activate_email_domain'), 'strlen');
-        $orgId = $request->user()->org_id;
+        $orgId = $request->integrate->org_id;
         $orgSetting = $this->getOrgSetting($orgId);
-        //        $this->authorize('update', $orgSetting); // TODO: NOT YET Permission
         $orgSetting->update($payload);
         return response()->json([
             'success' => true,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Client;
+namespace App\Http\Controllers\API\Integrate;
 
 use App\API;
 use App\BlockchainToken;
@@ -158,10 +158,10 @@ class AuthenticateController extends Controller
             ],
             'wallet' => json_decode($wallet)
         ];
-        $responseLogin = $this->postAPI(API::LOGIN, null, $payload, false);
+        $responseLogin = $this->postAPI(API::LOGIN, null, $payload, false, $request);
         if($responseLogin->success == true){
-            $token = Auth::user()->createToken('appToken');
-            $cookie = $this->getCookieDetails($token->accessToken);
+//            $token = Auth::user()->createToken('appToken');
+//            $cookie = $this->getCookieDetails($token->accessToken);
 //            session(['org_id' => Auth::user()->org_id]); // Do not use Session anymore
             $blockchainCredentials = [
                 'user_id' => Auth::user()->id,
@@ -179,9 +179,10 @@ class AuthenticateController extends Controller
                 'message' => 'Login successfully.',
                 'user' => Auth::user(),
                 'code' => $responseLogin->code,
-                'access_token' => $token->accessToken,
-                'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
-            ])->cookie($cookie['name'], $cookie['value'], $cookie['minutes'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'], $cookie['samesite']);
+//                'access_token' => $token->accessToken,
+//                'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
+            ]);
+//                ->cookie($cookie['name'], $cookie['value'], $cookie['minutes'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'], $cookie['samesite']);
         }
         Auth::logout();
 //        Auth::user()->token()->revoke(); // instead Auth::logout
@@ -194,7 +195,7 @@ class AuthenticateController extends Controller
 
     public function enrollUser(RegisterRequest $request)
     {
-        $organizationId = $request->user()->org_id;
+        $organizationId = $request->integrate->org_id;
         $request->merge([
             'org_id'   => $organizationId,
             'password' => Hash::make($request->input('password'))
@@ -204,10 +205,10 @@ class AuthenticateController extends Controller
         // Assign Role
 //        Role::where('org_id', $organizationId)->orWhere('id', '');
 
-        $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
+        $role = Role::where('org_id', $organizationId)->where('id', $request->input('role_id'))->firstOrFail();
         $user->assignRole($role);
         $payload = ['email' => $request->input('email')];
-        $responseBody = $this->postAPI(API::REGISTER, null, $payload, false);
+        $responseBody = $this->postAPI(API::REGISTER, null, $payload, true, $request);
 
         DB::beginTransaction();
         if ((bool)$responseBody->success == true && $user->save() == true) {
@@ -241,57 +242,6 @@ class AuthenticateController extends Controller
         ])->withCookie($cookie);
     }
 
-    public function loginAPI(LoginRequest $request)
-    {
-        $credentials = $request->only('email', 'password');
 
-        if(!Auth::attempt($credentials))
-            return response()->json([
-                'success' => false,
-                'code'    => 2,
-                'message' => 'Email or password are wrong! Please try again.'
-            ], 401);
-
-        $wallet = Crypt::decryptString($request->input('wallet'));
-        $payload = [
-            'user' => [
-                'email' => $request->input('email'),
-                'organization' => Auth::user()->org->org_prefix //right method [available in next release]
-            ],
-            'wallet' => json_decode($wallet)
-        ];
-        $responseLogin = $this->postAPI(API::LOGIN, null, $payload, false);
-        if($responseLogin->success == true){
-            $token = Auth::user()->createToken('appToken');
-            $cookie = $this->getCookieDetails($token->accessToken);
-//            session(['org_id' => Auth::user()->org_id]); // Do not use Session anymore
-            $blockchainCredentials = [
-                'user_id' => Auth::user()->id,
-                'token' => $responseLogin->response['credentials']['token'],
-                'expires_at' => Carbon::createFromTimestamp($responseLogin->response['credentials']['expires_at'])->toDateTimeString(),
-            ];
-
-            BlockchainToken::updateOrCreate(
-                ['user_id' => Auth::user()->id],
-                $blockchainCredentials
-            );
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Login successfully.',
-                'user' => Auth::user(),
-                'code' => $responseLogin->code,
-                'access_token' => $token->accessToken,
-                'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
-            ])->cookie($cookie['name'], $cookie['value'], $cookie['minutes'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'], $cookie['samesite']);
-        }
-        Auth::logout();
-//        Auth::user()->token()->revoke(); // instead Auth::logout
-        return response()->json([
-            'success' => false,
-            'message' => $responseLogin->errorMessage,
-            'code' => $responseLogin->code,
-        ], 400);
-    }
 
 }

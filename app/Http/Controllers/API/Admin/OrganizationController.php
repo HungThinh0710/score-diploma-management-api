@@ -54,7 +54,7 @@ class OrganizationController extends Controller
                 'code' => 1,
                 'message' => 'Educational Organization is already exists.',
             ]);
-        if(User::where('email', $request->input('admin_user'))->exists())
+        if (User::where('email', $request->input('admin_user'))->exists())
             return response()->json([
                 'success' => false,
                 'code' => 1,
@@ -65,30 +65,33 @@ class OrganizationController extends Controller
         // Send MSPID to Blockchain System (If it not exists in blockchain, return error)
         $payloadGetMSPIDS = $this->postAPI(API::GET_MSPIDS);
 
-        if($payloadGetMSPIDS->success == true){
-            $msPIdsRaw = $payloadGetMSPIDS->response;
-            $msPIds =  []; // MsPIds with right format (ex: "udn-vn" => "udn.vn")
-            for ($i = 0; $i < sizeof($msPIdsRaw); $i++){
-                $msPIds[] = str_replace('-', '.', $msPIdsRaw[$i]);
-                if($msPIds[$i] == $orgDomain){
-                    return response()->json([
-                        'success' => false,
-                        'code' => 1,
-                        'message' => $msPIds[$i].' is already exists in Blockchain System.',
-                    ]);
-                }
-            }
+        if($payloadGetMSPIDS->success == false)
+            return response()->json([
+                'success' => false,
+                'code' => 2,
+                'message' => 'Can not get MSPIDS on Blockchain system',
+            ]);
 
+        $msPIdsRaw = $payloadGetMSPIDS->response;
+        $msPIds = []; // MsPIds with right format (ex: "udn-vn" => "udn.vn")
+
+        for ($i = 0; $i < sizeof($msPIdsRaw); $i++) {
+            $msPIds[] = str_replace('-', '.', $msPIdsRaw[$i]);
         }
 
+        // Check is org exists on Blockchain (MUST EXIST)
+        if(!in_array($orgDomain, $msPIds))
+            return response()->json([
+                'success' => false,
+                'code' => 1,
+                'message' => $orgDomain.' is not exists on Blockchain.',
+            ]);
 
-
-        // TODO: Create a Setting record
         $organizationSetting = OrganizationSettings::create([
             'is_direct_submit_transcript' => 1,
-            'is_activate_email_domain'    => 0,
+            'is_activate_email_domain' => 0,
         ]);
-        if(!$organizationSetting)
+        if (!$organizationSetting)
             return response()->json([
                 'success' => false,
                 'code' => 1,
@@ -105,15 +108,13 @@ class OrganizationController extends Controller
             'org_prefix' => $orgDomain,
             'is_active' => 1,
             'email_domain' => $request->input('domain'),
-            'email' => $request->input('email').'@'.$request->input('domain'),
+            'email' => $request->input('email') . '@' . $request->input('domain'),
             'status' => 0,
             'description' => $request->input('description'),
             'address' => $request->input('address'),
         ]);
 
         $newOrgId = $newOrg->id;
-
-        // TODO: Create a user
 
         $adminUser = User::create([
             'org_id' => $newOrgId,
@@ -123,8 +124,6 @@ class OrganizationController extends Controller
             'password' => Hash::make($request->input('admin_password')),
         ]);
 
-
-        // TODO: Init, Assign Role & Permission
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         app(PermissionRegistrar::class)->setPermissionsTeamId($newOrgId);
         $roleAdmin = Role::create([
@@ -138,8 +137,8 @@ class OrganizationController extends Controller
             'org_id' => $newOrgId
         ]);
         $roleAdmin->givePermissionTo(Permission::all());
-        $roleUser->givePermissionTo('view class','view transcript', 'submit transcript', 'update transcript');
-
+        $roleUser->givePermissionTo('view class', 'view transcript', 'submit transcript', 'update transcript');
+        $adminUser->givePermissionTo(Permission::all());
         $adminUser->assignRole($roleAdmin);
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
@@ -150,22 +149,22 @@ class OrganizationController extends Controller
             "email" => $request->input('admin_user')
         ];
         $payloadEnrollUser = $this->postAPI(API::ENROLL_ADMIN, null, $dataEnroll);
-        if($payloadEnrollUser->success == true){
+        if ($payloadEnrollUser->success == true) {
             $credentials = $payloadEnrollUser->response;
             DB::commit();
             return response()->json([
                 'success' => true,
-                'code'    => 0,
+                'code' => 0,
                 'message' => 'Create Educational Organization successfully.',
-                'key'     => Crypt::encryptString(json_encode($credentials)),
+                'key' => Crypt::encryptString(json_encode($credentials)),
             ]);
         }
         $organizationSetting->delete();
         return response()->json([
-            'message'     => $payloadEnrollUser->errorMessage,
-            'success'     => false,
-            'user'        => null,
-            'code'        => $payloadEnrollUser->code,
+            'message' => $payloadEnrollUser->errorMessage,
+            'success' => false,
+            'user' => null,
+            'code' => $payloadEnrollUser->code,
             'credentials' => false,
         ], 400);
     }
