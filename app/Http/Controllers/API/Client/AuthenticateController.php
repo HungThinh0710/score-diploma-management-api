@@ -227,7 +227,7 @@ class AuthenticateController extends Controller
             'message'     => $responseBody->errorMessage,
             'success'     => false,
             'user'        => null,
-            'code' => $responseBody->code,
+            'code'        => $responseBody->code,
             'credentials' => false,
         ], 400);
     }

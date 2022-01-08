@@ -39,48 +39,34 @@ trait BlockchainExecutionTrait
 
     }
 
-    public function postAPI($endpoint, $headers = null, $payload = [], $authentication = false, $request = null)
+    public function postAPI($endpoint, $headers = null, $payload = [], $authentication = false)
     {
         try {
             $client = new \GuzzleHttp\Client();
-            if ($authentication === true) {
-                if ($request === null) {
-                    $blockchainToken = BlockchainToken::where('user_id', Auth::user()->id)->first();
-                } else {
-                    $orgId = $request->integrate->org_id;
-                    $user = User::where('org_id', $orgId)->where('is_owner', 1)->first();
-                    if ($user !== null)
-                        $blockchainToken = BlockchainToken::where('user_id', $user->id)->first();
-                    else {
-                        $errors = new stdClass();
-                        $errors->code = 101;
-                        $errors->data = null;
-                        $errors->success = false;
-                        $errors->errorMessage = "Can not connect to Blockchain API cause token not found.";
-                        return $this->returnObject(false, $errors);
-                    }
-                }
-                if ($blockchainToken === null) {
+            if($authentication === true){
+                $blockchainToken = BlockchainToken::where('user_id', Auth::user()->id)->first();
+                if($blockchainToken === null){
                     Auth::user()->token()->revoke();
                     return $this->returnObject(false, 'Blockchain token is not found, please sign in again.');
                 }
-                $headers['Authorization'] = 'Bearer ' . $blockchainToken->token;
-
+                $headers['Authorization'] = 'Bearer '.$blockchainToken->token;
             }
             $headers['secret'] = env('SECRET_API_KEY');
 
 
             $response = $client->request('POST', $endpoint, [
                 'headers' => $headers,
-                'json' => $payload
+                'json' =>  $payload
             ]);
 //            dd(json_decode($response->getBody()->getContents()));
-            $responseJSON = (object)json_decode($response->getBody()->getContents(), true);
+            $responseJSON = (object) json_decode($response->getBody()->getContents(), true);
             return $this->returnObject($responseJSON->success, $responseJSON);
-        } catch (ClientException $e) {
+        }
+        catch (ClientException $e){
             echo Psr7\Message::toString($e->getRequest());
             echo Psr7\Message::toString($e->getResponse());
-        } catch (ConnectException $ex) {
+        }
+        catch (ConnectException $ex){
             $errors = new stdClass();
             $errors->code = 100;
             $errors->data = null;

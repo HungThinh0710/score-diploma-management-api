@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'development'], function(){
     Route::group(['prefix' => 'auth'], function() {
-        Route::post('/login', 'API\Development\FakeAuthenticateController@login')->name('dev.login');
+//        Route::post('/login', 'API\Development\FakeAuthenticateController@login')->name('dev.login');
     });
 });
 
@@ -23,18 +23,21 @@ Route::group(['prefix' => 'client'], function(){
 
     Route::group(['prefix' => 'auth'], function(){
         Route::post('login', 'API\Client\AuthenticateController@login');
-        Route::post('login-api', 'API\Client\AuthenticateController@loginAPI');
         Route::post('register', 'API\Client\AuthenticateController@register'); //BETA DEV
     });
 
     Route::group(['middleware' => 'auth.api'], function() {
+
+        Route::group(['prefix' => 'auth'], function(){
+            Route::post('logout', 'API\Client\AuthenticateController@logout');
+        });
 
         // Enroll user
         Route::post('enroll/user', 'API\Client\AuthenticateController@enrollUser');
 
         // Users
         Route::group(['prefix' => 'users'], function(){
-            Route::get('/', 'API\Client\UserController@index')->name('users.list');
+            Route::get('/', 'API\Client\UserController@index')->name('users.get');
             //...
         });
 
@@ -42,7 +45,8 @@ Route::group(['prefix' => 'client'], function(){
         Route::group(['prefix' => 'organization'], function(){
             Route::get('/', 'API\Client\OrganizationController@index')->name('organization.list');
             Route::patch('/', 'API\Client\OrganizationController@update')->name('organization.update');
-            Route::get('/users', 'API\Client\OrganizationController@users')->name('organization.users');
+            Route::get('/users', 'API\Client\OrganizationController@users')->name('organization.users.list');
+            Route::post('/update-user', 'API\Client\OrganizationController@updateUser')->name('organization.users.update');
             Route::get('/setting', 'API\Client\OrganizationController@getSetting')->name('organization.setting.get');
             Route::post('/setting', 'API\Client\OrganizationController@changeSetting')->name('organization.setting.update');
 

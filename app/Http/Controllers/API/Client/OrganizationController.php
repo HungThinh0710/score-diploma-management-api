@@ -7,6 +7,7 @@ use App\Http\Requests\API\Organization\UpdateOrganizationRequest;
 use App\Http\Requests\API\Organization\ViewOrganizationRequest;
 use App\Http\Traits\GetOrganizationSettings;
 use App\Organization;
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\PermissionRegistrar;
@@ -15,7 +16,7 @@ class OrganizationController extends Controller
 {
     use GetOrganizationSettings;
 
-    public function index(ViewOrganizationRequest $request)
+    public function index(Request $request)
     {
         $org = Organization::findOrFail($request->user()->org_id);
         $this->authorize('view', $org);
@@ -42,13 +43,34 @@ class OrganizationController extends Controller
     public function users(Request $request)
     {
         $this->authorize('users', Organization::class);
-        $users = User::with('roles')->where('org_id', $request->user()->org_id)->paginate($request->input('perpage')); // Use $request->org->user instead
+        $users = User::with('roles')->where('org_id', $request->user()->org_id)->paginate($request->input('perpage'));
         return response()->json([
             'success' => true,
             'message' => 'Get users in organization successfully.',
             'users' => $users,
         ]);
     }
+
+    public function updateUser(Request $request)
+    {
+        $this->authorize('users', Organization::class); // FIXME: Must change permission
+        $users = User::where('org_id', $request->user()->org_id)->where('id', $request->input('user_id'))->firstOrFail();
+//        $payload = array_filter($request->only('email', 'full_name'), 'strlen');
+        $payload = array_filter($request->only('full_name'), 'strlen');
+        $users->update($payload);
+        if($request->has('role_id')){
+            $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
+            $users->assignRole($role);
+            app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Update user successfully.',
+            'users' => $users,
+        ]);
+    }
+
+
 
     public function getSetting(Request $request)
     {
