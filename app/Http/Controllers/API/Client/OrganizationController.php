@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\API\Client;
 
+use App\ClassRoom;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Organization\UpdateOrganizationRequest;
 use App\Http\Requests\API\Organization\ViewOrganizationRequest;
 use App\Http\Traits\GetOrganizationSettings;
+use App\InQueueTranscript;
 use App\Organization;
 use App\Role;
+use App\Transcript;
 use App\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\PermissionRegistrar;
@@ -58,7 +61,7 @@ class OrganizationController extends Controller
 //        $payload = array_filter($request->only('email', 'full_name'), 'strlen');
         $payload = array_filter($request->only('full_name'), 'strlen');
         $users->update($payload);
-        if($request->has('role_id')){
+        if ($request->has('role_id')) {
             $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
             $users->assignRole($role);
             app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
@@ -69,7 +72,6 @@ class OrganizationController extends Controller
             'users' => $users,
         ]);
     }
-
 
 
     public function getSetting(Request $request)
@@ -96,6 +98,28 @@ class OrganizationController extends Controller
             'success' => true,
             'message' => 'Update organization setting successfully.',
             'setting' => $orgSetting,
+        ]);
+    }
+
+    public function statistical(Request $request)
+    {
+        $orgId = $request->user()->org_id;
+        $usersCount = User::where('org_id', $orgId)->count();
+        $transcriptCount = Transcript::with(['classroom' => function ($q) use ($orgId) {
+            return $q->where('org_id', $orgId);
+        }])->count();
+        $pendingTranscriptCount = InQueueTranscript::with(['classroom' => function ($q) use ($orgId) {
+            return $q->where('org_id', $orgId);
+        }])->count();
+        $classCount = ClassRoom::where('org_id', $orgId)->count();
+
+        return response()->json([
+            'success' => true,
+            'message' => '',
+            'users' => $usersCount,
+            'transcripts' => $transcriptCount,
+            'pending_transcripts' => $pendingTranscriptCount,
+            'classes' => $classCount
         ]);
     }
 }

@@ -13,6 +13,7 @@ use App\Role;
 use App\User;
 //use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
@@ -237,6 +238,7 @@ class AuthenticateController extends Controller
         Auth::user()->token()->revoke();
         $cookie = Cookie::forget('_token');
         return response()->json([
+            'success' => true,
             'message' => 'Logout user successfully'
         ])->withCookie($cookie);
     }

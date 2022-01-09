@@ -43,6 +43,7 @@ Route::group(['prefix' => 'client'], function(){
 
         // Organization
         Route::group(['prefix' => 'organization'], function(){
+            Route::get('/statistical', 'API\Client\OrganizationController@statistical')->name('organization.statistical');
             Route::get('/', 'API\Client\OrganizationController@index')->name('organization.list');
             Route::patch('/', 'API\Client\OrganizationController@update')->name('organization.update');
             Route::get('/users', 'API\Client\OrganizationController@users')->name('organization.users.list');
@@ -88,7 +89,7 @@ Route::group(['prefix' => 'client'], function(){
             Route::post('/submit', 'API\Client\TranscriptController@submit')->name('transcript.submit');
             Route::post('/submit-raw', 'API\Client\TranscriptController@submitRaw')->name('transcript.submit.raw');
             Route::patch('/update', 'API\Client\TranscriptController@update')->name('transcript.update');
-//            Route::delete('/', 'API\Client\TranscriptController@index')->name('transcript.delete');
+//            Route::delete('/', 'API\Client\TranscriptController@delete')->name('transcript.delete');
         });
 
         // In Queue Transcript
