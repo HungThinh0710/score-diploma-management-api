@@ -159,6 +159,7 @@ class OrganizationController extends Controller
                 'key' => Crypt::encryptString(json_encode($credentials)),
             ]);
         }
+        DB::rollBack();
         $organizationSetting->delete();
         return response()->json([
             'message' => $payloadEnrollUser->errorMessage,

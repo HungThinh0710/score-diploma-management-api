@@ -48,8 +48,6 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapAdminRoutes();
 
-        $this->mapIntegrateRoutes();
-
         //
     }
 
@@ -95,21 +93,6 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/admin.php'));
-    }
-
-    /**
-     * Define the "integration" routes for the application.
-     *
-     * These routes are typically stateless.
-     *
-     * @return void
-     */
-    protected function mapIntegrateRoutes()
-    {
-        Route::prefix('api/v1/integrate')
-            ->middleware('api')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/integrate.php'));
     }
 
 }

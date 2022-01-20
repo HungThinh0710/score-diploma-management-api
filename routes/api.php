@@ -23,11 +23,10 @@ Route::group(['prefix' => 'client'], function(){
 
     Route::group(['prefix' => 'auth'], function(){
         Route::post('login', 'API\Client\AuthenticateController@login');
-        Route::post('register', 'API\Client\AuthenticateController@register'); //BETA DEV
+//        Route::post('register', 'API\Client\AuthenticateController@register'); // Development
     });
 
     Route::group(['middleware' => 'auth.api'], function() {
-
         Route::group(['prefix' => 'auth'], function(){
             Route::post('logout', 'API\Client\AuthenticateController@logout');
         });
