@@ -188,7 +188,7 @@ class AuthenticateController extends Controller
 //        Auth::user()->token()->revoke(); // instead Auth::logout
         return response()->json([
             'success' => false,
-            'message' => $responseLogin->errorMessage,
+            'message' => '[FABRIC API] '. $responseLogin->errorMessage,
             'code' => $responseLogin->code,
         ], 400);
     }
@@ -206,7 +206,10 @@ class AuthenticateController extends Controller
         $role = Role::where('org_id', $request->user()->org_id)->where('id', $request->input('role_id'))->first();
         $user->assignRole($role);
 
-        $payload = ['email' => $request->input('email')];
+        $payload = [
+            'email' => $request->input('email'),
+            'mspid' => $request->user()->org->org_prefix,
+        ];
         $responseBody = $this->postAPI(API::REGISTER, null, $payload, false);
 
         DB::beginTransaction();
@@ -221,7 +224,7 @@ class AuthenticateController extends Controller
                 'walletEncrypted' => Crypt::encryptString(json_encode($responseBody->response)),
             ], 201);
         }
-        $this->postAPI(API::REVOKE_USER, null, $payload);
+//        $this->postAPI(API::REVOKE_USER, null, $payload);
         DB::rollBack();
         return response()->json([
             'message'     => $responseBody->errorMessage,

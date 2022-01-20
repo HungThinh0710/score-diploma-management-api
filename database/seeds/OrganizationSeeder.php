@@ -35,54 +35,54 @@ class OrganizationSeeder extends Seeder
 
         DB::table('organizations')->insert([
             'setting_id' => 1,
-            'org_name' => 'Viet Han University',
-            'org_prefix' => 'it.vku.udn.vn',
+            'org_name' => 'Vietnam-Korea University of Infomation and Communication Technology',
+            'org_prefix' => 'vku.udn.vn',
             'org_code' => 'VKU',
             'is_active' => 1,
             'status' => 0,
             'email' => 'contact@vku.udn.vn',
             'email_domain' => 'vku.udn.vn',
-            'description' => 'Việt Hàn',
-            'address' => 'Khu đô thị Đà Nẵng'
+            'description' => 'Trường ĐH CNTT & TT Việt Hàn',
+            'address' => 'Làng đại học Đà Nẵng'
         ]);
 
         DB::table('organizations')->insert([
             'setting_id' => 2,
-            'org_name' => 'Bach Khoa University',
-            'org_prefix' => 'bka.udn.vn',
-            'org_code' => 'BKA',
+            'org_name' => 'University of Science and Technology',
+            'org_prefix' => 'dut.udn.vn',
+            'org_code' => 'DUT',
             'is_active' => 1,
             'status' => 0,
-            'email' => 'contact@bka.udn.vn',
-            'email_domain' => 'bka.udn.vn',
-            'description' => 'Bách Khoa',
-            'address' => 'Khu đô thị Đà Nẵng'
+            'email' => 'contact@dut.udn.vn',
+            'email_domain' => 'dut.udn.vn',
+            'description' => 'Trường Đại học Bách Khoa',
+            'address' => 'Làng đại học Đà Nẵng'
         ]);
 
         DB::table('organizations')->insert([
             'setting_id' => 3,
-            'org_name' => 'Kinh Tees University',
+            'org_name' => 'University of Economics',
             'org_prefix' => 'due.udn.vn',
             'org_code' => 'DUE',
             'is_active' => 1,
             'status' => 0,
             'email' => 'contact@due.udn.vn',
             'email_domain' => 'due.udn.vn',
-            'description' => 'Kinh Tế',
-            'address' => 'Khu đô thị Đà Nẵng'
+            'description' => 'Trường Đại học Kinh Tế',
+            'address' => 'Làng đại học Đà Nẵng'
         ]);
 
         DB::table('organizations')->insert([
             'setting_id' => 4,
-            'org_name' => 'Ngoại Ngữ University',
+            'org_name' => 'University of Foreign Language Studies',
             'org_prefix' => 'ufl.udn.vn',
             'org_code' => 'UFL',
             'is_active' => 1,
             'status' => 0,
             'email' => 'contact@ufl.udn.vn',
             'email_domain' => 'ufl.udn.vn',
-            'description' => 'Ngoại ngữ',
-            'address' => 'Khu đô thị Đà Nẵng'
+            'description' => 'Trường Đại học Ngoại ngữ',
+            'address' => 'Làng đại học Đà Nẵng'
         ]);
 
 

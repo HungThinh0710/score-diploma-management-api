@@ -23,7 +23,7 @@ Route::group(['prefix' => 'client'], function(){
 
     Route::group(['prefix' => 'auth'], function(){
         Route::post('login', 'API\Client\AuthenticateController@login');
-//        Route::post('register', 'API\Client\AuthenticateController@register'); // Development
+        Route::post('register', 'API\Client\AuthenticateController@register'); // Development
     });
 
     Route::group(['middleware' => 'auth.api'], function() {
